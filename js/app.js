@@ -38,15 +38,35 @@
     renderList('messages', (content.messages || []).map(function (m) {
       return { who: m.from, text: m.text };
     }), 'msg');
-    var hw = content.homework || {};
-    $('sonName').textContent = (hw.son && hw.son.name) || '儿子';
-    $('daughterName').textContent = (hw.daughter && hw.daughter.name) || '女儿';
-    renderList('sonHomework', ((hw.son && hw.son.items) || []).map(function (t) { return { text: t }; }), 'hw-son');
-    renderList('daughterHomework', ((hw.daughter && hw.daughter.items) || []).map(function (t) { return { text: t }; }), 'hw-daughter');
+    renderHomework();
 
     initPhotos();
     renderWeatherIcon(0);
     loadWeather();
+  }
+
+  // ---------- 作业：只显示当天布置的 ----------
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+  function renderHwCol(id, col) {
+    var cls = id === 'sonHomework' ? 'hw-son' : 'hw-daughter';
+    var fresh = col && col.date === todayKey() && col.items && col.items.length;
+    if (fresh) {
+      renderList(id, col.items.map(function (t) { return { text: t }; }), cls);
+    } else {
+      renderList(id, [{ text: '今日没有布置作业', empty: true }], cls);
+    }
+  }
+
+  function renderHomework() {
+    var hw = content ? (content.homework || {}) : {};
+    $('sonName').textContent = (hw.son && hw.son.name) || '儿子';
+    $('daughterName').textContent = (hw.daughter && hw.daughter.name) || '女儿';
+    renderHwCol('sonHomework', hw.son);
+    renderHwCol('daughterHomework', hw.daughter);
   }
 
   // ---------- 时钟 ----------
@@ -104,6 +124,10 @@
   function renderList(id, items, cls) {
     var track = $(id);
     if (!track) return;
+    // 内容可能被换成更少的条目：先停掉旧滚动动画，否则残留位移会让列表错位
+    if (track._raf) { CAF(track._raf); track._raf = null; }
+    track.style.webkitTransform = 'translateY(0)';
+    track.style.transform = 'translateY(0)';
     track.innerHTML = '';
     if (!items.length) {
       var empty = document.createElement('div');
@@ -116,6 +140,7 @@
     items.forEach(function (it) {
       var div = document.createElement('div');
       div.className = 'item';
+      if (it.empty) { div.style.opacity = '.6'; div.style.textAlign = 'center'; }
       if (it.who) {
         var w = document.createElement('span');
         w.className = 'who';
@@ -292,10 +317,11 @@
             renderAll();
           }
         }).catch(function () {});
-      // 每分钟校正日期/倒计时跨天
+      // 每分钟校正日期/倒计时跨天，并按当天日期重新判断作业是否过期
       renderDate();
       renderCountdown();
       renderTheme();
+      renderHomework();
     }, 60000);
   }
 
