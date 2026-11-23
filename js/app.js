@@ -49,6 +49,14 @@
     loadWeather();
   }
 
+  // ---------- 时钟 ----------
+  function renderClock() {
+    var el = $('clockTime');
+    if (!el) return;
+    var now = new Date();
+    el.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  }
+
   // ---------- 日期 / 农历 ----------
   function renderDate() {
     var now = new Date();
@@ -292,7 +300,9 @@
   }
 
   // ---------- 启动 ----------
+  renderClock();
+  setInterval(renderClock, 1000);
   loadContent(function () { scheduleRefresh(); });
-  // 每秒校正时钟相关的日期显示（跨零点）
+  // 每 30 秒校正日期显示（跨零点）
   setInterval(function () { renderDate(); }, 30000);
 })();

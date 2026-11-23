@@ -33,9 +33,10 @@ body {
 .mascot { width:6.2vh; height:6.2vh; -webkit-flex:none; flex:none; margin-right:0.7vw; }
 .brand-text h1 { font-size:3.6vh; font-weight:700; line-height:1.1; letter-spacing:1px; }
 .brand-text p { font-size:1.75vh; color:#FFF0DC; margin-top:0.4vh; }
-.date-block { -webkit-flex:1.1 1 0; flex:1.1 1 0; min-width:0; text-align:center; border-left:1px solid rgba(255,255,255,.35); border-right:1px solid rgba(255,255,255,.35); }
-.date-main { font-size:2.9vh; font-weight:700; }
-.date-lunar { font-size:1.8vh; color:#FFF0DC; margin-top:0.4vh; }
+.date-block { -webkit-flex:1.2 1 0; flex:1.2 1 0; min-width:0; text-align:center; border-left:1px solid rgba(255,255,255,.35); border-right:1px solid rgba(255,255,255,.35); }
+.clock { font-size:4.2vh; font-weight:800; line-height:1.05; letter-spacing:2px; color:#FFF7E6; }
+.date-main { font-size:2.5vh; font-weight:700; margin-top:0.2vh; }
+.date-lunar { font-size:1.7vh; color:#FFF0DC; margin-top:0.3vh; }
 .countdown { display:-webkit-flex; display:flex; -webkit-align-items:baseline; align-items:baseline; -webkit-justify-content:center; justify-content:center; -webkit-flex:0.9 1 0; flex:0.9 1 0; min-width:0; }
 .countdown > * { margin-right:0.4vw; }
 .countdown > *:last-child { margin-right:0; }
