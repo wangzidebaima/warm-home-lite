@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>温馨的小家（兼容版）</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Compat build: no manifest, no Service Worker. Data and images are read
+       from the main site (../warm-home/) so only one copy needs updating. -->
+</head>
+<body>
+  <div class="board">
+
+    <header class="topbar">
+      <div class="brand">
+        <svg class="mascot" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="16" cy="18" r="9" fill="#9c6234"/><circle cx="48" cy="18" r="9" fill="#9c6234"/>
+          <circle cx="16" cy="18" r="4" fill="#e7a978"/><circle cx="48" cy="18" r="4" fill="#e7a978"/>
+          <circle cx="32" cy="36" r="24" fill="#b57a42"/>
+          <ellipse cx="32" cy="43" rx="14" ry="12" fill="#f0d3a8"/>
+          <circle cx="24" cy="33" r="2.6" fill="#4a3020"/><circle cx="40" cy="33" r="2.6" fill="#4a3020"/>
+          <circle cx="19" cy="39" r="3" fill="#ef9a9a"/><circle cx="45" cy="39" r="3" fill="#ef9a9a"/>
+          <path d="M27 41 Q32 47 37 41" stroke="#4a3020" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M28 46 Q32 51 36 46 L32 52 Z" fill="#e8617d"/>
+        </svg>
+        <div class="brand-text">
+          <h1 id="title">温馨的小家</h1>
+          <p id="subtitle">有爱 · 温暖 · 每一天</p>
+        </div>
+      </div>
+
+      <div class="date-block">
+        <div class="date-main" id="dateMain">—</div>
+        <div class="date-lunar" id="dateLunar">—</div>
+      </div>
+
+      <div class="countdown" id="countdownBox">
+        <span class="cd-label" id="examLabel">距期末考试</span>
+        <span class="cd-num" id="countdownNum">—</span>
+        <span class="cd-unit">天</span>
+      </div>
+
+      <div class="weather" id="weatherBox">
+        <svg id="weatherIcon" class="weather-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="11" fill="#FFF3C4" stroke="#D2691E" stroke-width="2.2"/>
+          <path d="M24 6v-4M24 46v-4M6 24h-4M46 24h-4M11 11l-3-3M41 41l3 3M41 11l3-3M11 41l-3 3" stroke="#D2691E" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <div class="weather-text">
+          <div class="weather-temp" id="weatherTemp">天气加载中…</div>
+          <div class="weather-tip" id="weatherTip">正在获取未央区天气</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="theme-bar">
+      <span class="theme-tag">今日爱的主题</span>
+      <span class="theme-text" id="themeText">—</span>
+      <span class="special-day" id="specialDay"></span>
+    </div>
+
+    <section class="middle">
+      <div class="card card-todo">
+        <h2 class="card-title"><span class="ic-todo"></span>今日待办</h2>
+        <div class="scroll-window"><div class="scroll-track" id="todos"></div></div>
+      </div>
+      <div class="card card-msg">
+        <h2 class="card-title"><span class="ic-msg"></span>留言板</h2>
+        <div class="scroll-window"><div class="scroll-track" id="messages"></div></div>
+      </div>
+      <div class="card card-photo">
+        <h2 class="card-title"><span class="ic-photo"></span>家庭照片</h2>
+        <div class="photo-frame"><img id="photo" src="" alt="家庭照片" onerror="this.style.display='none'"></div>
+        <div class="photo-empty" id="photoEmpty">把照片发给我，就会显示在这里</div>
+      </div>
+    </section>
+
+    <section class="homework">
+      <div class="hw-col hw-son">
+        <div class="hw-head">
+          <img class="hw-avatar" src="../warm-home/avatars/son.png" alt="" onerror="this.style.visibility='hidden'">
+          <h2 id="sonName">徐梓逸</h2><span class="hw-suffix">的作业</span>
+        </div>
+        <div class="scroll-window"><div class="scroll-track" id="sonHomework"></div></div>
+      </div>
+      <div class="hw-col hw-daughter">
+        <div class="hw-head">
+          <img class="hw-avatar" src="../warm-home/avatars/daughter.png" alt="" onerror="this.style.visibility='hidden'">
+          <h2 id="daughterName">徐清湲</h2><span class="hw-suffix">的作业</span>
+        </div>
+        <div class="scroll-window"><div class="scroll-track" id="daughterHomework"></div></div>
+      </div>
+    </section>
+
+  </div>
+  <script src="js/lunar.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
