@@ -305,6 +305,16 @@
     }
     empty.style.display = 'none';
     img.style.display = 'block';
+    // 完整按比例显示：读照片原始宽高 + 框实际尺寸，算出能完整放下的像素宽高（不依赖 object-fit）
+    function fitPhoto() {
+      var frame = img.parentNode;
+      var fw = frame.clientWidth, fh = frame.clientHeight;
+      var iw = img.naturalWidth, ih = img.naturalHeight;
+      if (!fw || !fh || !iw || !ih) return;
+      var s = Math.min(fw / iw, fh / ih);
+      img.style.width = Math.round(iw * s) + 'px';
+      img.style.height = Math.round(ih * s) + 'px';
+    }
     var intervalMin = content.photoIntervalMinutes || 30;
     var period = intervalMin * 60 * 1000;
     // 7:00~22:00 每 intervalMin 分钟换一张；22:00 后停住，次日 7:00 再开始
@@ -321,6 +331,7 @@
       var idx = slotIndex(now) % photos.length;
       var src = photos[idx];
       if (src.indexOf('http') !== 0 && src.charAt(0) !== '/') src = ASSET + src;
+      img.onload = fitPhoto;
       img.src = src + '?t=' + Math.floor(now.getTime() / period);
     }
     show();

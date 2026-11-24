@@ -81,8 +81,8 @@ body {
 .item .who { font-weight:700; margin-right:0.5vw; }
 
 /* photo */
-.photo-frame { -webkit-flex:1 1 0; flex:1 1 0; min-height:0; width:100%; overflow:hidden; line-height:0; }
-.photo-frame img { width:100%; height:100%; object-fit:contain; display:block; border-radius:10px; }
+.photo-frame { -webkit-flex:1 1 0; flex:1 1 0; min-height:0; width:100%; overflow:hidden; display:-webkit-flex; display:flex; -webkit-align-items:center; align-items:center; -webkit-justify-content:center; justify-content:center; }
+.photo-frame img { display:block; max-width:100%; max-height:100%; -webkit-flex:none; flex:none; border-radius:10px; }
 .photo-empty { font-size:1.7vh; color:#B79A6E; text-align:center; padding:1vh 0; }
 
 /* homework */
