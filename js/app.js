@@ -176,7 +176,7 @@
       // 复制后总高 = 2*contentH + gap，一个周期 = contentH + gap
       var gap = originals.length ? (parseFloat(getComputedStyle(originals[0]).marginBottom) || 0) : 0;
       var cycle = contentH + gap;
-      var speed = 26; // px/s
+      var speed = 15; // px/s
       var dist = cycle;
       var dur = dist / speed;
       var start = performance.now();
@@ -289,15 +289,23 @@
     }
     empty.style.display = 'none';
     img.style.display = 'block';
-    var hours = content.photoIntervalHours || 3;
-    var period = hours * 3600 * 1000;
-    // 按当前时间确定起始位置，保证跨刷新也按节奏走
-    photoIdx = Math.floor(Date.now() / period) % photos.length;
+    var intervalMin = content.photoIntervalMinutes || 30;
+    var period = intervalMin * 60 * 1000;
+    // 7:00~22:00 每 intervalMin 分钟换一张；22:00 后停住，次日 7:00 再开始
+    var lastSlot = Math.floor(15 * 60 / intervalMin) - 1; // 15 小时窗口的最后一个槽位
+    function slotIndex(now) {
+      var h = now.getHours();
+      if (h < 7 || h >= 22) return lastSlot;
+      var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0);
+      var mins = Math.floor((now - start) / 60000);
+      return Math.max(0, Math.floor(mins / intervalMin));
+    }
     function show() {
-      var src = photos[photoIdx % photos.length];
+      var now = new Date();
+      var idx = slotIndex(now) % photos.length;
+      var src = photos[idx];
       if (src.indexOf('http') !== 0 && src.charAt(0) !== '/') src = ASSET + src;
-      img.src = src + '?t=' + Math.floor(Date.now() / period);
-      photoIdx++;
+      img.src = src + '?t=' + Math.floor(now.getTime() / period);
     }
     show();
     if (photoTimer) clearInterval(photoTimer);
