@@ -205,18 +205,21 @@
   };
   function loadWeather() {
     if (!content) return;
-    var lat = content.latitude || 34.2706, lon = content.longitude || 108.9453;
-    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
-      '&current=temperature_2m,weather_code&daily=precipitation_probability_max,temperature_2m_max,temperature_2m_min' +
-      '&timezone=Asia%2FShanghai&forecast_days=1';
+    var key = (content.weatherKey || '').trim();
+    var adcode = content.weatherAdcode || '610100'; // 西安市
+    var url = 'https://restapi.amap.com/v3/weather/weatherInfo?key=' + key +
+      '&city=' + adcode + '&extensions=all';
     fetch(url).then(function (r) { return r.json(); }).then(function (d) {
-      if (!d || !d.current) return;
-      var t = Math.round(d.current.temperature_2m);
-      var code = d.current.weather_code;
-      var info = WMO[code] || ['天气多变','☀'];
-      var pop = (d.daily && d.daily.precipitation_probability_max && d.daily.precipitation_probability_max[0]) || 0;
-      var tmax = d.daily && d.daily.temperature_2m_max ? Math.round(d.daily.temperature_2m_max[0]) : null;
-      var tmin = d.daily && d.daily.temperature_2m_min ? Math.round(d.daily.temperature_2m_min[0]) : null;
+      if (!d || d.status !== '1' || !d.forecasts || !d.forecasts[0]) { throw new Error('bad'); }
+      var casts = d.forecasts[0].casts;
+      if (!casts || !casts.length) { throw new Error('bad'); }
+      var today = casts[0];
+      var h = new Date().getHours();
+      var isDay = h >= 6 && h < 18;
+      var weather = isDay ? today.dayweather : today.nightweather;
+      var tmax = parseInt(today.daytemp, 10);
+      var tmin = parseInt(today.nighttemp, 10);
+      var t = isDay ? tmax : tmin;
 
       var dress;
       if (t >= 30) dress = '天气炎热，注意防暑';
@@ -225,15 +228,31 @@
       else if (t >= 15) dress = '建议加件薄外套';
       else if (t >= 10) dress = '天气较凉，多穿一点';
       else dress = '天气寒冷，注意保暖';
-      var umbrella = pop >= 50 ? '记得带伞' : '不用带伞';
-      var range = (tmax !== null && tmin !== null) ? (' ' + tmin + '~' + tmax + '°') : '';
-      $('weatherTemp').textContent = t + '° ' + info[0] + range;
+      var umbrella = needUmbrella(weather) ? '记得带伞' : '不用带伞';
+      var range = ' ' + tmin + '~' + tmax + '°';
+      $('weatherTemp').textContent = t + '° ' + weather + range;
       $('weatherTip').textContent = dress + ' · ' + umbrella;
-      renderWeatherIcon(code);
+      renderWeatherIcon(amapCode(weather));
     }).catch(function () {
       $('weatherTemp').textContent = '天气暂不可用';
       $('weatherTip').textContent = (content.city || '') + ' · 稍后自动重试';
     });
+  }
+
+  function needUmbrella(w) {
+    return /雨|雪|雷/.test(w || '');
+  }
+  function amapCode(w) {
+    w = w || '';
+    if (w.indexOf('雷') >= 0) return 95;
+    if (w.indexOf('雪') >= 0) return 73;
+    if (w.indexOf('大雨') >= 0 || w.indexOf('暴雨') >= 0) return 65;
+    if (w.indexOf('中雨') >= 0) return 63;
+    if (w.indexOf('雨') >= 0) return 61;
+    if (w.indexOf('雾') >= 0 || w.indexOf('霾') >= 0) return 45;
+    if (w.indexOf('阴') >= 0) return 3;
+    if (w.indexOf('云') >= 0) return 2;
+    return 0;
   }
   function renderWeatherIcon(code) {
     var icon = $('weatherIcon');
