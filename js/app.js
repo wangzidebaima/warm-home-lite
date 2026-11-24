@@ -35,9 +35,6 @@
     renderList('todos', (content.todos || []).map(function (t) {
       return typeof t === 'string' ? { text: t } : { text: t.text };
     }), 'todo');
-    renderList('messages', (content.messages || []).map(function (m) {
-      return { who: m.from, text: m.text };
-    }), 'msg');
     renderHomework();
 
     initPhotos();
