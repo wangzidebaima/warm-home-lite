@@ -50,7 +50,11 @@
 
   function renderHwCol(id, col) {
     var cls = id === 'sonHomework' ? 'hw-son' : 'hw-daughter';
-    var fresh = col && col.date === todayKey() && col.items && col.items.length;
+    // 显示范围：从 date 到 endDate（含）。没写 endDate 就只显示 date 当天，兼容旧数据
+    var today = todayKey();
+    var end = (col && col.endDate) || (col && col.date);
+    var fresh = col && col.date && col.items && col.items.length &&
+      today >= col.date && today <= end;
     if (fresh) {
       renderList(id, col.items.map(function (t) { return { text: t }; }), cls);
     } else {
